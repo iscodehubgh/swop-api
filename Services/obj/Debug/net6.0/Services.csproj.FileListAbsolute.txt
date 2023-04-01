@@ -1,0 +1,17 @@
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Services.deps.json
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Services.dll
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Services.pdb
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Infrastructure.dll
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Repository.dll
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Infrastructure.pdb
+C:\Users\Ognjen\source\repos\Exchange\Services\bin\Debug\net6.0\Repository.pdb
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.csproj.AssemblyReference.cache
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.AssemblyInfoInputs.cache
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.AssemblyInfo.cs
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.csproj.CoreCompileInputs.cache
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.csproj.CopyComplete
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.dll
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\refint\Services.dll
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\Services.pdb
+C:\Users\Ognjen\source\repos\Exchange\Services\obj\Debug\net6.0\ref\Services.dll
