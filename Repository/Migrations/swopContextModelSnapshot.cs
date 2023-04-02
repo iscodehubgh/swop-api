@@ -2,6 +2,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository.Models;
 
 #nullable disable
@@ -155,9 +157,8 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Models.Address", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AddressLine1")
                         .IsRequired()
@@ -181,10 +182,12 @@ namespace Repository.Migrations
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
                 });
@@ -197,7 +200,7 @@ namespace Repository.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -267,9 +270,8 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Models.Article", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -279,26 +281,28 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("Repository.Models.Category", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ParentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -309,12 +313,11 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Models.File", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("ArticleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ArticleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Path")
                         .IsRequired()
@@ -329,20 +332,23 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Models.Offer", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ReceiverId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("SenderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
 
                     b.HasIndex("StatusId");
 
@@ -368,18 +374,17 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Models.Trade", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("ArticleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ArticleId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsRequested")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("OfferId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Quantity")
                         .IsRequired()
@@ -445,6 +450,26 @@ namespace Repository.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Repository.Models.Address", b =>
+                {
+                    b.HasOne("Repository.Models.ApplicationUser", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Repository.Models.Article", b =>
+                {
+                    b.HasOne("Repository.Models.ApplicationUser", "User")
+                        .WithMany("Articles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Repository.Models.Category", b =>
                 {
                     b.HasOne("Repository.Models.Category", "Parent")
@@ -465,9 +490,21 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Models.Offer", b =>
                 {
+                    b.HasOne("Repository.Models.ApplicationUser", "Receiver")
+                        .WithMany("OfferReceivers")
+                        .HasForeignKey("ReceiverId");
+
+                    b.HasOne("Repository.Models.ApplicationUser", "Sender")
+                        .WithMany("OfferSenders")
+                        .HasForeignKey("SenderId");
+
                     b.HasOne("Repository.Models.Status", "Status")
                         .WithMany("Offers")
                         .HasForeignKey("StatusId");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
 
                     b.Navigation("Status");
                 });
@@ -485,6 +522,17 @@ namespace Repository.Migrations
                     b.Navigation("Article");
 
                     b.Navigation("Offer");
+                });
+
+            modelBuilder.Entity("Repository.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Articles");
+
+                    b.Navigation("OfferReceivers");
+
+                    b.Navigation("OfferSenders");
                 });
 
             modelBuilder.Entity("Repository.Models.Article", b =>

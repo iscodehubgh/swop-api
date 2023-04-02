@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository.Models;
 
@@ -17,13 +18,22 @@ namespace WebAPI.Controllers
 
         // GET: api/Articles
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Article>>> GetArticles()
         {
           if (_context.Articles == null)
           {
               return NotFound();
           }
-            return await _context.Articles.ToListAsync();
+            return await _context.Articles
+                                 .Select(x => new Article { 
+                                     Id = x.Id, 
+                                     Title = x.Title,
+                                     Description = x.Description,
+                                     User = x.User,
+                                     Files = x.Files
+                                 })
+                                 .ToListAsync();
         }
 
         // GET: api/Articles/5
@@ -47,7 +57,7 @@ namespace WebAPI.Controllers
         // PUT: api/Articles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticle(Guid id, Article article)
+        public async Task<IActionResult> PutArticle(string id, Article article)
         {
             if (id != article.Id)
             {
@@ -110,7 +120,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        private bool ArticleExists(Guid id)
+        private bool ArticleExists(string id)
         {
             return (_context.Articles?.Any(e => e.Id == id)).GetValueOrDefault();
         }

@@ -1,4 +1,7 @@
-﻿namespace Repository.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace Repository.Models
 {
     public partial class Category
     {
@@ -7,9 +10,9 @@
             InverseParent = new HashSet<Category>();
         }
 
-        public Guid Id { get; set; }
+        public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
-        public Guid? ParentId { get; set; }
+        public string? ParentId { get; set; }
 
         public virtual Category? Parent { get; set; }
         public virtual ICollection<Category> InverseParent { get; set; }

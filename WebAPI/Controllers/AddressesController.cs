@@ -23,7 +23,9 @@ namespace WebAPI.Controllers
           {
               return NotFound();
           }
-            return await _context.Addresses.ToListAsync();
+            return await _context.Addresses
+                                 .Include(x => x.User)
+                                 .ToListAsync();
         }
 
         // GET: api/Addresses/5
@@ -47,7 +49,7 @@ namespace WebAPI.Controllers
         // PUT: api/Addresses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAddress(Guid id, Address address)
+        public async Task<IActionResult> PutAddress(string id, Address address)
         {
             if (id != address.Id)
             {
@@ -110,7 +112,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        private bool AddressExists(Guid id)
+        private bool AddressExists(string id)
         {
             return (_context.Addresses?.Any(e => e.Id == id)).GetValueOrDefault();
         }

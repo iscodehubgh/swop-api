@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(Guid id, Category category)
+        public async Task<IActionResult> PutCategory(string id, Category category)
         {
             if (id != category.Id)
             {
@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        private bool CategoryExists(Guid id)
+        private bool CategoryExists(string id)
         {
             return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }

@@ -1,10 +1,13 @@
-﻿namespace Repository.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace Repository.Models
 {
     public partial class File
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = null!;
         public string Path { get; set; } = null!;
-        public Guid? ArticleId { get; set; }
+        public string? ArticleId { get; set; }
 
         public virtual Article? Article { get; set; }
     }

@@ -16,12 +16,14 @@ var AllowedOrigins = "Exchange";
 // Add services to the container.
 builder.Services.Configure<ApplicationSettings>(configuration.GetSection("ApplicationSettings"));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 //builder.Services.AddAutoMapper(typeof(Program));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddDbContext<ExchangeContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
 
-builder.Services.AddDbContext<swopContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database2")));
+builder.Services.AddDbContext<swopContext>(options => options.UseSqlServer(configuration.GetConnectionString("Database")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,22 +36,22 @@ builder.Services.AddCors(options => options.AddPolicy(name: AllowedOrigins,
                                                       }));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-    {
-        // Password settings
-        options.Password.RequiredLength = 8;
+{
+    // Password settings
+    options.Password.RequiredLength = 8;
 
-        // Lockout settings
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-        options.Lockout.MaxFailedAccessAttempts = 5;
-        options.Lockout.AllowedForNewUsers = true;
+    // Lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
 
-        // User settings
-        options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-        options.User.RequireUniqueEmail = true;
-    })
-    .AddEntityFrameworkStores<swopContext>()
-    .AddDefaultTokenProviders();
+    // User settings
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<swopContext>()
+.AddDefaultTokenProviders();
 
 //Adding Authentication
 builder.Services.AddAuthentication(options =>
@@ -74,6 +76,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
     };
 });
+//builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 //builder.Services.AddScoped<IAuthRepository, AuthRepository>();

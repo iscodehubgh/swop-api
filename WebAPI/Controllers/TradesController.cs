@@ -23,7 +23,10 @@ namespace WebAPI.Controllers
           {
               return NotFound();
           }
-            return await _context.Trades.ToListAsync();
+            return await _context.Trades
+                                 .Include(x => x.Article)
+                                 .Include(x => x.Offer)
+                                 .ToListAsync();
         }
 
         // GET: api/Trades/5
@@ -47,7 +50,7 @@ namespace WebAPI.Controllers
         // PUT: api/Trades/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTrade(Guid id, Trade trade)
+        public async Task<IActionResult> PutTrade(string id, Trade trade)
         {
             if (id != trade.Id)
             {
@@ -110,7 +113,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        private bool TradeExists(Guid id)
+        private bool TradeExists(string id)
         {
             return (_context.Trades?.Any(e => e.Id == id)).GetValueOrDefault();
         }

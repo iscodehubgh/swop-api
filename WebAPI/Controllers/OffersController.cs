@@ -23,7 +23,12 @@ namespace WebAPI.Controllers
           {
               return NotFound();
           }
-            return await _context.Offers.ToListAsync();
+            return await _context.Offers
+                                 .Include(x => x.Status)
+                                 .Include(x => x.Trades)
+                                 .Include(x => x.Sender)
+                                 .Include(x => x.Receiver)
+                                 .ToListAsync();
         }
 
         // GET: api/Offers/5
@@ -47,7 +52,7 @@ namespace WebAPI.Controllers
         // PUT: api/Offers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOffer(Guid id, Offer offer)
+        public async Task<IActionResult> PutOffer(string id, Offer offer)
         {
             if (id != offer.Id)
             {
@@ -110,7 +115,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
-        private bool OfferExists(Guid id)
+        private bool OfferExists(string id)
         {
             return (_context.Offers?.Any(e => e.Id == id)).GetValueOrDefault();
         }
