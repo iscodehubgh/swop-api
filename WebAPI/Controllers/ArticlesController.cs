@@ -1,57 +1,92 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Repository.DTOs.Articles;
 using Repository.Models;
+using Services.Services.Articles;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ArticlesController : ControllerBase
+    public class ArticlesController : BaseController<ArticlesController>
     {
-        private readonly swopContext _context;
+        private readonly IArticlesService _articlesService;
 
-        public ArticlesController(swopContext context)
+        public ArticlesController(IArticlesService articlesService)
         {
-            _context = context;
+            _articlesService = articlesService;
         }
 
         // GET: api/Articles
         [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<Article>>> GetArticles()
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<ArticlesDTO>>> GetArticles()
         {
-          if (_context.Articles == null)
-          {
-              return NotFound();
-          }
-            return await _context.Articles
-                                 .Select(x => new Article { 
-                                     Id = x.Id, 
-                                     Title = x.Title,
-                                     Description = x.Description,
-                                     User = x.User,
-                                     Files = x.Files
-                                 })
-                                 .ToListAsync();
+            try
+            {
+                var articlesResult = await _articlesService.GetArticles();
+
+                if (articlesResult == null)
+                {
+                    return NotFound();
+                }
+
+                return articlesResult.ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+
+                return StatusCode(500, ex);
+            }
         }
 
         // GET: api/Articles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Article>> GetArticle(Guid id)
+        public async Task<ActionResult<Article>> GetArticle(string id)
         {
-          if (_context.Articles == null)
-          {
-              return NotFound();
-          }
-            var article = await _context.Articles.FindAsync(id);
-
-            if (article == null)
+            //Create validation for guid and return BadRequest if is not!!!
+            try
             {
-                return NotFound();
-            }
+                var articleResult = await _articlesService.GetArticle(id);
 
-            return article;
+                if (articleResult == null)
+                {
+                    return NotFound();
+                }
+
+                return articleResult;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+
+                return StatusCode(500, ex);
+            }
+        }
+
+        // POST: api/Articles
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Article>> PostArticle(Article article)
+        {
+            try
+            {
+                var articleResult = await _articlesService.PostArticle(article);
+
+                if (articleResult == null)
+                {
+                    return Problem("Entity set 'swopContext.Articles'  is null.");
+                }
+
+                return CreatedAtAction("GetArticle", new { id = article.Id }, article);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+
+                return StatusCode(500, ex);
+            }
         }
 
         // PUT: api/Articles/5
@@ -61,68 +96,49 @@ namespace WebAPI.Controllers
         {
             if (id != article.Id)
             {
-                return BadRequest();
+                return BadRequest("Invalid 'id!'");
             }
-
-            _context.Entry(article).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArticleExists(id))
+                var articleResult = await _articlesService.PutArticle(id, article);
+
+                if (articleResult == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                return NoContent();
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
 
-            return NoContent();
+                return StatusCode(500, ex);
+            }
         }
-
-        // POST: api/Articles
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Article>> PostArticle(Article article)
-        {
-          if (_context.Articles == null)
-          {
-              return Problem("Entity set 'swopContext.Articles'  is null.");
-          }
-            _context.Articles.Add(article);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetArticle", new { id = article.Id }, article);
-        }
-
+        
         // DELETE: api/Articles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArticle(Guid id)
+        public async Task<IActionResult> DeleteArticle(string id)
         {
-            if (_context.Articles == null)
+            try
             {
-                return NotFound();
+                var articleResult = await _articlesService.DeleteArticle(id);
+
+                if (articleResult == null)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
-            var article = await _context.Articles.FindAsync(id);
-            if (article == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                Logger.LogError(ex, ex.Message);
+
+                return StatusCode(500, ex);
             }
-
-            _context.Articles.Remove(article);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ArticleExists(string id)
-        {
-            return (_context.Articles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

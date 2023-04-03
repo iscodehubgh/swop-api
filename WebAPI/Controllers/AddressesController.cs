@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository.Models;
+using Repository.Repositories.Addresses;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AddressesController : ControllerBase
+    public class AddressesController : BaseController<AddressesController>
     {
+        private readonly IAddressesRepository _addressesRepository;
         private readonly swopContext _context;
 
-        public AddressesController(swopContext context)
+        public AddressesController(IAddressesRepository addressesRepository,
+                                   swopContext context)
         {
+            _addressesRepository = addressesRepository;
             _context = context;
         }
 
@@ -19,18 +23,28 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Address>>> GetAddresses()
         {
-          if (_context.Addresses == null)
-          {
-              return NotFound();
-          }
-            return await _context.Addresses
-                                 .Include(x => x.User)
-                                 .ToListAsync();
+            try
+            {
+                var articlesResult = await _addressesRepository.GetAll();
+
+                if (articlesResult == null)
+                {
+                    return NotFound();
+                }
+
+                return articlesResult.ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+
+                return StatusCode(500, ex);
+            }
         }
 
         // GET: api/Addresses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Address>> GetAddress(Guid id)
+        public async Task<ActionResult<Address>> GetAddress(string id)
         {
           if (_context.Addresses == null)
           {

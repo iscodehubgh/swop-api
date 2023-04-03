@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Models;
+using Repository.Repositories.Addresses;
+using Repository.Repositories.Articles;
 using Services.Auth;
 using Services.Interfaces.Auth;
+using Services.Services.Articles;
 using System.Text;
 using WebAPI.Models;
 
@@ -59,7 +62,8 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+.AddJwtBearer(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
@@ -79,7 +83,9 @@ builder.Services.AddAuthentication(options =>
 //builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>();
+builder.Services.AddScoped<IArticlesService, ArticlesService>();
+builder.Services.AddScoped<IAddressesRepository, AddressesRepository>();
 
 var app = builder.Build();
 
