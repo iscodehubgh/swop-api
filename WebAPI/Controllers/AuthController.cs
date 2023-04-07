@@ -110,9 +110,9 @@ namespace WebAPI.Controllers
 
                     var authClaims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, existingUser.UserName),
-                        new Claim(ClaimTypes.GivenName, existingUser.FirstName),
-                        new Claim(ClaimTypes.Surname, existingUser.LastName),
+                        new Claim("email", existingUser.UserName),
+                        new Claim("firstname", existingUser.FirstName),
+                        new Claim("lastname", existingUser.LastName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                     };
 
