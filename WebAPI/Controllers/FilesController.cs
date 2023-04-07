@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository.Models;
+using Services.Models;
 using File = Repository.Models.File;
 
 namespace WebAPI.Controllers
@@ -114,6 +115,55 @@ namespace WebAPI.Controllers
         private bool FileExists(string id)
         {
             return (_context.Files?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        [HttpPost("ImportFile")]
+        public async Task<IActionResult> ImportFile([FromForm] IFormFile file)
+        {
+            string name = file.FileName;
+            string extension = Path.GetExtension(file.FileName);
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.CopyTo(memoryStream);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(List<IFormFile> files)
+        {
+            try
+            {
+                var result = new List<FileUploadResult>();
+
+                foreach (var file in files)
+                {
+                    //TODO - check if exist
+
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
+                    var stream = new FileStream(path, FileMode.Create);
+                    file.CopyToAsync(stream);
+
+                    //TODO - add to file table in database
+
+                    result.Add(new FileUploadResult() { Name = file.FileName, Length = file.Length });
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
