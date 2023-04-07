@@ -68,6 +68,7 @@ namespace WebAPI.Controllers
         // POST: api/Articles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Article>> PostArticle(Article article)
         {
             try
@@ -92,6 +93,7 @@ namespace WebAPI.Controllers
         // PUT: api/Articles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutArticle(string id, Article article)
         {
             if (id != article.Id)
@@ -120,6 +122,7 @@ namespace WebAPI.Controllers
         
         // DELETE: api/Articles/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteArticle(string id)
         {
             try
