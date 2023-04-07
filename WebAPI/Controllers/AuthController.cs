@@ -55,7 +55,13 @@ namespace WebAPI.Controllers
 
                 if (result.Succeeded)
                 {
-                    return Ok(result);
+                    var loginResult = await Login(authService, new LoginModel
+                    {
+                        Email = user.Email,
+                        Password = user.Password,
+                    });
+
+                    return loginResult;
                 }
 
                 if (result.Errors != null)
