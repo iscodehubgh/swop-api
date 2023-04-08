@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models
 {
     public partial class Address : IEntity
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
         public string AddressLine1 { get; set; } = null!;
         public string AddressLine2 { get; set; } = null!;

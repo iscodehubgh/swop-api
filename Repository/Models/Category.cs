@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models
 {
@@ -10,6 +11,7 @@ namespace Repository.Models
             InverseParent = new HashSet<Category>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string? ParentId { get; set; }

@@ -1,4 +1,5 @@
-﻿using Repository.Models;
+﻿using Repository.DTOs.Articles;
+using Repository.Models;
 
 namespace Repository.Repositories.Articles
 {
@@ -6,8 +7,8 @@ namespace Repository.Repositories.Articles
     {
         Task<IEnumerable<Article>> GetArticles();
         Task<Article> GetArticle(string id);
-        Task<Article> PutArticle(string id, Article article);
-        Task<Article> PostArticle(Article article);
+        Task<Article> PutArticle(string id, ArticlesDTO article);
+        Task<Article> PostArticle(ArticlesDTO article, string userId);
         Task<Article> DeleteArticle(string id);
     }
 }

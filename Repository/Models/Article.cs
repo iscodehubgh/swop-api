@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Models
 {
@@ -11,6 +12,7 @@ namespace Repository.Models
             Trades = new HashSet<Trade>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;

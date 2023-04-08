@@ -11,6 +11,7 @@ namespace Repository.Models
             Trades = new HashSet<Trade>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
         public string? SenderId { get; set; }
         public string? ReceiverId { get; set; }

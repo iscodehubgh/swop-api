@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repository.DTOs.Articles;
 using Repository.Models;
 
 namespace Repository.Repositories.Articles
@@ -46,22 +47,29 @@ namespace Repository.Repositories.Articles
             }
 
             return article;
-        }     
+        }
 
-        public async Task<Article> PostArticle(Article article)
+        public async Task<Article> PostArticle(ArticlesDTO article, string userId)
         {
             if (_context.Articles == null)
             {
                 return new Article();
             }
 
-            _context.Articles.Add(article);
+            var newArticle = _context.Articles.Add(new Article
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Description = article.Description,
+                UserId = userId
+            });
+
             await _context.SaveChangesAsync();
 
-            return article;
+            return newArticle.Entity;
         }
 
-        public async Task<Article> PutArticle(string id, Article article)
+        public async Task<Article> PutArticle(string id, ArticlesDTO article)
         {
             if (!ArticleExists(id))
             {
@@ -72,7 +80,8 @@ namespace Repository.Repositories.Articles
 
             await _context.SaveChangesAsync();
 
-            return article;
+            //return article;
+            return new Article();
         }
 
         public async Task<Article> DeleteArticle(string id)

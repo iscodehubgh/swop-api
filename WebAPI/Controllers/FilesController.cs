@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Repository.DTOs.Files;
 using Repository.Models;
 using Services.Models;
 using File = Repository.Models.File;
@@ -80,13 +81,19 @@ namespace WebAPI.Controllers
         // POST: api/Files
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<File>> PostFile(File file)
+        public async Task<ActionResult<File>> PostFile(FilesDTO file)
         {
-          if (_context.Files == null)
-          {
-              return Problem("Entity set 'swopContext.Files'  is null.");
-          }
-            _context.Files.Add(file);
+            if (_context.Files == null)
+            {
+                return Problem("Entity set 'swopContext.Files'  is null.");
+            }
+
+            _context.Files.Add(new File
+            {
+                Path = file.Path,
+                ArticleId = file.ArticleId,
+            });
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetFile", new { id = file.Id }, file);

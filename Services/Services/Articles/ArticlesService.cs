@@ -13,9 +13,10 @@ namespace Services.Services.Articles
             _articlesRepository = articlesRepository;
         }
 
-        public async Task<IEnumerable<ArticlesDTO>> GetArticles()
+        public async Task<IEnumerable<Article>> GetArticles()
         {
-            return (await _articlesRepository.GetArticles()).Select(x => ArticlesMapper.MapArticlesFromEntityToDTO(x)).ToList();
+            //return (await _articlesRepository.GetArticles()).Select(x => ArticlesMapper.MapArticlesFromEntityToDTO(x)).ToList();
+            return (await _articlesRepository.GetArticles()).ToList();
         }
 
         public async Task<Article> GetArticle(string id)
@@ -23,12 +24,12 @@ namespace Services.Services.Articles
             return await _articlesRepository.GetArticle(id);
         }        
 
-        public async Task<Article> PostArticle(Article article)
+        public async Task<Article> PostArticle(ArticlesDTO article, string userId)
         {
-            return await _articlesRepository.PostArticle(article);
+            return await _articlesRepository.PostArticle(article, userId);
         }
 
-        public async Task<Article> PutArticle(string id, Article article)
+        public async Task<Article> PutArticle(string id, ArticlesDTO article)
         {
             return await _articlesRepository.PutArticle(id, article);
         }
